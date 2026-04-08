@@ -2,6 +2,16 @@
 
 This repository uses Playwright with TypeScript for API and end-to-end test automation.
 
+## Step 0. Clone and Install Dependencies
+
+If the project already exists in GitHub, clone it first:
+
+```bash
+git clone <your-repository-url>
+cd mythos-api-tests
+npm install
+```
+
 ## Step 1. Install Required Tools
 
 Install these tools before creating or running the project:
@@ -206,10 +216,24 @@ BASE_URL=
 API_TOKEN=
 ```
 
+The project includes `.env.example` as a safe template. Copy it into `.env` before running tests:
+
+```bash
+cp .env.example .env
+```
+
+If you are using PowerShell on Windows, use:
+
+```powershell
+Copy-Item .env.example .env
+```
+
 Typical file naming:
 
 1. `.env` for local real values
 2. `.env.example` for documented placeholders
+
+The Playwright config loads `.env` automatically and uses `BASE_URL` as `baseURL`.
 
 ## Step 8. Install the Playwright VS Code Extension
 
@@ -236,10 +260,22 @@ Run all tests:
 npx playwright test
 ```
 
+or with npm:
+
+```bash
+npm test
+```
+
 Run tests in UI mode:
 
 ```bash
 npx playwright test --ui
+```
+
+or:
+
+```bash
+npm run test:ui
 ```
 
 Run tests in headed mode:
@@ -248,16 +284,34 @@ Run tests in headed mode:
 npx playwright test --headed
 ```
 
+or:
+
+```bash
+npm run test:headed
+```
+
 Show the HTML report after a run:
 
 ```bash
 npx playwright show-report
 ```
 
+or:
+
+```bash
+npm run report
+```
+
 If browsers ever need to be installed again:
 
 ```bash
 npx playwright install
+```
+
+or:
+
+```bash
+npm run pw:install
 ```
 
 ## Step 10. Run Type Check
@@ -268,7 +322,36 @@ Run TypeScript type-checking without generating output files:
 npx tsc --noEmit
 ```
 
+or:
+
+```bash
+npm run typecheck
+```
+
 This is useful for catching typing mistakes early, even though Playwright can execute TypeScript tests directly.
+
+## Step 11. Recommended Project Structure
+
+A simple structure that works well for Playwright projects:
+
+```text
+mythos-api-tests/
+  tests/
+  src/
+  playwright.config.ts
+  tsconfig.json
+  package.json
+  .env.example
+```
+
+What each part is for:
+
+1. `tests/` contains Playwright test files.
+2. `src/` can contain helpers, clients, fixtures, and shared utilities.
+3. `playwright.config.ts` contains the global Playwright configuration.
+4. `tsconfig.json` contains TypeScript compiler settings.
+5. `package.json` contains dependencies and runnable scripts.
+6. `.env.example` documents required environment variables.
 
 ## Project Summary
 
