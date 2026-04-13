@@ -11,6 +11,7 @@ jobs:
     env:
       BASE_URL: https://api.qasandbox.ru/api/
       GRAPHQL_URL: https://api.qasandbox.ru/graphql
+      UI_BASE_URL: https://api.qasandbox.ru/
       USERNAME: ${{ secrets.QASANDBOX_USERNAME }}
       PASSWORD: ${{ secrets.QASANDBOX_PASSWORD }}
       HAS_AUTH_SECRETS: ${{ secrets.QASANDBOX_USERNAME != '' && secrets.QASANDBOX_PASSWORD != '' }}
@@ -31,6 +32,8 @@ jobs:
       run: npm run test:read
     - name: Run GraphQL tests
       run: npm run test:graphql
+    - name: Run UI example tests
+      run: npm run test:ui-example
     - name: Run auth tests
       if: env.HAS_AUTH_SECRETS == 'true'
       run: npm run test:auth
