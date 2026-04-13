@@ -13,6 +13,7 @@
     "test:allure": "npm run allure:clean && playwright test",
     "test:crud": "playwright test --grep @crud",
     "test:debug-demo": "node ./scripts/run-ignored-tests.mjs",
+    "test:graphql": "playwright test --grep @graphql",
     "test:mock": "playwright test --grep @mock",
     "docker:build": "docker compose build tests",
     "docker:report": "docker compose run --rm --service-ports report",
@@ -35,6 +36,7 @@
     "@playwright/test": "^1.59.1",
     "@types/node": "^25.5.2",
     "allure-commandline": "^2.38.1",
+    "allure-js-commons": "^3.7.1",
     "allure-playwright": "^3.7.1",
     "typescript": "^6.0.2"
   },
