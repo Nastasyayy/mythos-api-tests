@@ -1,5 +1,6 @@
 import { writeFile } from 'node:fs/promises';
 import * as allure from 'allure-js-commons';
+import type { StepContext } from 'allure-js-commons';
 import {
   expect,
   request as playwrightRequest,
@@ -179,7 +180,7 @@ export const test = base.extend<ApiFixtures, ApiWorkerFixtures>({
       const startedAt = new Date().toISOString();
       const requestSnapshot = buildRequestSnapshot(metadata.request);
 
-      return allure.step(`API: ${metadata.label}`, async (stepContext) => {
+      return allure.step(`API: ${metadata.label}`, async (stepContext: StepContext) => {
         await stepContext.parameter('method', metadata.request.method);
         await stepContext.parameter('url', metadata.request.url);
         await allure.attachment('request', stringifyAttachment(requestSnapshot), 'application/json');

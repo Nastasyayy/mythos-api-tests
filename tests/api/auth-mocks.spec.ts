@@ -1,4 +1,5 @@
 import * as allure from 'allure-js-commons';
+import type { StepContext } from 'allure-js-commons';
 import { expect, test } from '../fixtures/api-test';
 
 const expiredTokenPayload =
@@ -206,7 +207,7 @@ test(
     expect(result.createBody).toEqual(mockedUnauthorizedResponse);
 
     for (const exchange of exchanges) {
-      await allure.step(`Mock API: ${exchange.label}`, async (stepContext) => {
+      await allure.step(`Mock API: ${exchange.label}`, async (stepContext: StepContext) => {
         await stepContext.parameter('method', exchange.request.method);
         await stepContext.parameter('url', exchange.request.url);
         await stepContext.parameter('status', String(exchange.response.status));

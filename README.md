@@ -746,6 +746,35 @@ npx.cmd playwright install chromium
 npm.cmd run test:mock
 ```
 
+## Step 13D. Add GraphQL API Test Examples
+
+The project also includes GraphQL examples for the Mythos sandbox at `https://api.qasandbox.ru/graphql`.
+
+What the GraphQL suite covers:
+
+1. Public `allSouls` and `getSoul` queries
+2. `registerScribe`, `loginScribe`, and `currentScribe` auth flow
+3. Authenticated `createSoul`, `patchSoulDeeds`, and `banishSoul` lifecycle
+
+Implementation notes:
+
+1. Reusable GraphQL request helpers live in `src/api/graphql.ts`
+2. The test suite lives in `tests/api/graphql.spec.ts`
+3. `GRAPHQL_URL` is optional in `.env`; if it is missing, the tests use `https://api.qasandbox.ru/graphql`
+4. The same `debugApiCall(...)` fixture is reused, so GraphQL requests and responses are attached to Allure the same way as the REST tests
+
+Run only the GraphQL examples:
+
+```bash
+npm run test:graphql
+```
+
+If you are using PowerShell on Windows and `npm` is blocked by execution policy, use:
+
+```powershell
+npm.cmd run test:graphql
+```
+
 ## Step 14. Recommended Project Structure
 
 A simple structure that works well for an API-focused Playwright project:
