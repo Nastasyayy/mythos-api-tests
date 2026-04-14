@@ -21,6 +21,7 @@ export type AuthSession = {
 };
 
 const REGISTER_USERNAME_PREFIX = 'playwright_user';
+export const DEFAULT_TEST_PASSWORD = 'Playwright123!';
 
 const requireEnvValue = (value: string | undefined, name: string): string => {
   if (!value) {
@@ -44,13 +45,15 @@ export const getConfiguredCredentials = (): AuthCredentials => ({
   password: requireEnvValue(env.password, 'PASSWORD'),
 });
 
+export const createUniqueCredentials = (password = DEFAULT_TEST_PASSWORD): AuthCredentials => ({
+  username: `${REGISTER_USERNAME_PREFIX}_${createUsernameSuffix()}`,
+  password,
+});
+
 export const createUniqueCredentialsFromEnv = (): AuthCredentials => {
   const password = requireEnvValue(env.password, 'PASSWORD');
 
-  return {
-    username: `${REGISTER_USERNAME_PREFIX}_${createUsernameSuffix()}`,
-    password,
-  };
+  return createUniqueCredentials(password);
 };
 
 export const registerUser = (

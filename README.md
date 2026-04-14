@@ -207,6 +207,7 @@ Example:
 ```bash
 BASE_URL=https://api.qasandbox.ru/api/
 GRAPHQL_URL=https://api.qasandbox.ru/graphql
+UI_BASE_URL=https://api.qasandbox.ru/
 USERNAME=your_existing_test_username
 PASSWORD=your_existing_test_password
 ```
@@ -216,6 +217,7 @@ Recommended example file for the team:
 ```bash
 BASE_URL=
 GRAPHQL_URL=
+UI_BASE_URL=
 USERNAME=
 PASSWORD=
 ```
@@ -800,6 +802,84 @@ npm run allure:generate
 npm run allure:open
 ```
 
+## Step 13E. Add a UI Example with Page Object and API-Assisted Setup
+
+The project also includes one simple UI example for `https://api.qasandbox.ru/`.
+
+What this example demonstrates:
+
+1. A user is created through the reusable REST API helper before the UI flow starts
+2. The UI test then logs in with that user through the real browser
+3. The page itself is wrapped in a Page Object
+4. The auth modal is extracted into a smaller component object
+
+Files involved:
+
+1. `tests/ui/rest-auth-ui.spec.ts` contains the example test
+2. `src/ui/pages/mythos-home-page.ts` contains the main Page Object
+3. `src/ui/components/rest-auth-modal.ts` contains the auth modal object
+4. `src/api/auth.ts` provides the reusable API helper used for user creation
+
+Why this pattern is useful:
+
+1. API-assisted setup makes the UI test faster and less flaky than registering the user through the browser every time
+2. The Page Object keeps selectors and UI actions out of the test body
+3. The component object pattern keeps the auth modal reusable and easier to maintain
+4. The test clearly shows the difference between a direct API request in Playwright and a real browser action in Playwright
+
+What is reused from the API layer:
+
+1. `registerUser(...)` creates the user through the REST API helper
+2. `createUniqueCredentials(...)` generates a unique login for the UI scenario
+3. The browser then performs the login through the visible UI instead of calling `/login` directly
+
+Run only the UI example:
+
+```bash
+npm run test:ui-example
+```
+
+If you are using PowerShell on Windows and `npm` is blocked by execution policy, use:
+
+```powershell
+npm.cmd run test:ui-example
+```
+
+Recommended local flow:
+
+```bash
+npm install
+npx playwright install chromium
+npm run test:ui-example
+```
+
+Debug mode:
+
+1. Start the test in a paused browser with `PWDEBUG=1`
+2. Use this in PowerShell:
+
+```powershell
+$env:PWDEBUG=1
+npx.cmd playwright test --grep @ui-example
+```
+
+3. Run the same test in headed mode without the Playwright pause overlay:
+
+```powershell
+npx.cmd playwright test --headed --grep @ui-example
+```
+
+How to exit debug mode:
+
+1. Press `Ctrl+C` in the terminal to stop the test run
+2. Clear the environment variable in the same PowerShell session:
+
+```powershell
+Remove-Item Env:PWDEBUG
+```
+
+3. If you close and reopen the terminal, `PWDEBUG` is cleared automatically
+
 ## Step 14. Recommended Project Structure
 
 A simple structure that works well for an API-focused Playwright project:
@@ -809,11 +889,13 @@ mythos-api-tests/
   scripts/
   tests/
     api/
+    ui/
     fixtures/
     support/
   src/
     api/
     config/
+    ui/
   Dockerfile
   compose.yaml
   .dockerignore
@@ -831,27 +913,30 @@ What each part is for:
 
 1. `scripts/` contains small utility launchers for special test flows
 2. `tests/api/` contains REST, GraphQL, and mock-based API scenarios such as `auth.spec.ts`, `graphql.spec.ts`, and `auth-mocks.spec.ts`
-3. `tests/fixtures/` contains shared Playwright fixtures for auth, request logging, and resource lifecycle
-4. `tests/support/` contains shared test data, contract assertions, and helper inputs
-5. `src/api/` contains reusable API request helpers for both REST and GraphQL flows
-6. `src/config/` contains environment-variable helpers and shared configuration code
-7. `playwright.config.ts` contains the global Playwright configuration
-8. `Dockerfile` contains the cross-platform Playwright runtime for containerized runs
-9. `compose.yaml` contains ready-to-run Docker services for tests and report viewing
-10. `.dockerignore` keeps the Docker build context clean and avoids copying local artifacts into the image
-11. `allure-results/` stores raw Allure execution data
-12. `allure-report/` stores the generated Allure HTML site
-13. `tsconfig.json` contains TypeScript compiler settings
-14. `package.json` contains dependencies and runnable scripts
-15. `.env.example` documents required environment variables
-16. `playwright-report/` is generated after test runs for HTML reporting
-17. `test-results/` is generated after test runs for traces and attachments
+3. `tests/ui/` contains browser-based scenarios such as the Page Object login example
+4. `tests/fixtures/` contains shared Playwright fixtures for auth, request logging, and resource lifecycle
+5. `tests/support/` contains shared test data, contract assertions, and helper inputs
+6. `src/api/` contains reusable API request helpers for both REST and GraphQL flows
+7. `src/config/` contains environment-variable helpers and shared configuration code
+8. `src/ui/` contains Page Objects and smaller UI component objects
+9. `playwright.config.ts` contains the global Playwright configuration
+10. `Dockerfile` contains the cross-platform Playwright runtime for containerized runs
+11. `compose.yaml` contains ready-to-run Docker services for tests and report viewing
+12. `.dockerignore` keeps the Docker build context clean and avoids copying local artifacts into the image
+13. `allure-results/` stores raw Allure execution data
+14. `allure-report/` stores the generated Allure HTML site
+15. `tsconfig.json` contains TypeScript compiler settings
+16. `package.json` contains dependencies and runnable scripts
+17. `.env.example` documents required environment variables
+18. `playwright-report/` is generated after test runs for HTML reporting
+19. `test-results/` is generated after test runs for traces and attachments
 
 How the test layers are split:
 
 1. REST live API tests cover the main `/api` endpoints and reuse `.env` credentials where auth is required
 2. GraphQL tests cover public queries plus authenticated mutations by dynamically registering a new test user
 3. Mock tests demonstrate Playwright network interception with `page.route(...)` and do not validate the real backend contract
+4. UI tests cover browser behavior and can reuse the API layer only for test-data setup
 
 ## Step 15. API Smoke Test Starter
 

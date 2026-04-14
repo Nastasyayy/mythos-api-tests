@@ -15,6 +15,7 @@
     "test:debug-demo": "node ./scripts/run-ignored-tests.mjs",
     "test:graphql": "playwright test --grep @graphql",
     "test:mock": "playwright test --grep @mock",
+    "test:ui-example": "playwright test --grep @ui-example",
     "docker:build": "docker compose build tests",
     "docker:report": "docker compose run --rm --service-ports report",
     "docker:test": "docker compose run --rm tests",
