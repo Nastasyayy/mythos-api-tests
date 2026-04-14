@@ -30,16 +30,10 @@ export class MythosHomePage {
     this.page = page;
     this.authModal = new RestAuthModal(page);
     this.restTabButton = page.getByRole('button', { name: /REST API/i });
-    this.sandboxTabButton = page.getByRole('button', {
-      name: /\u041f\u0435\u0441\u043e\u0447\u043d\u0438\u0446\u0430/i,
-    });
-    this.loginButton = page.locator('main').getByRole('button', {
-      name: '\u0412\u043e\u0439\u0442\u0438',
-    });
-    this.logoutButton = page.getByRole('button', { name: '\u0412\u044b\u0439\u0442\u0438' });
-    this.createEntityButton = page.getByRole('button', {
-      name: '\u041f\u0440\u0438\u0437\u0432\u0430\u0442\u044c \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u043e',
-    });
+    this.sandboxTabButton = page.getByRole('button', { name: /Песочница/i });
+    this.loginButton = page.locator('main').getByRole('button', { name: 'Войти' });
+    this.logoutButton = page.getByRole('button', { name: 'Выйти' });
+    this.createEntityButton = page.getByRole('button', { name: 'Призвать существо' });
     this.createEntityModal = page.locator('#modal-create');
   }
 

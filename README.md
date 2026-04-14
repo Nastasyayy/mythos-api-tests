@@ -853,6 +853,33 @@ npx playwright install chromium
 npm run test:ui-example
 ```
 
+Debug mode:
+
+1. Start the test in a paused browser with `PWDEBUG=1`
+2. Use this in PowerShell:
+
+```powershell
+$env:PWDEBUG=1
+npx.cmd playwright test --grep @ui-example
+```
+
+3. Run the same test in headed mode without the Playwright pause overlay:
+
+```powershell
+npx.cmd playwright test --headed --grep @ui-example
+```
+
+How to exit debug mode:
+
+1. Press `Ctrl+C` in the terminal to stop the test run
+2. Clear the environment variable in the same PowerShell session:
+
+```powershell
+Remove-Item Env:PWDEBUG
+```
+
+3. If you close and reopen the terminal, `PWDEBUG` is cleared automatically
+
 ## Step 14. Recommended Project Structure
 
 A simple structure that works well for an API-focused Playwright project:

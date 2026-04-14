@@ -17,12 +17,8 @@ export class RestAuthModal {
     this.page = page;
     this.usernameInput = page.locator('#auth-user');
     this.passwordInput = page.locator('#auth-pass');
-    this.loginButton = page.locator('#modal-auth').getByRole('button', {
-      name: '\u0412\u043e\u0439\u0442\u0438',
-    });
-    this.registerButton = page.locator('#modal-auth').getByRole('button', {
-      name: '\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f',
-    });
+    this.loginButton = page.locator('#modal-auth').getByRole('button', { name: 'Войти' });
+    this.registerButton = page.locator('#modal-auth').getByRole('button', { name: 'Регистрация' });
   }
 
   async fillCredentials(credentials: AuthCredentials): Promise<void> {
