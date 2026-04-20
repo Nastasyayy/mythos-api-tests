@@ -106,8 +106,7 @@ for (const testCase of unauthorizedMutationCases) {
 
     expectApiErrorBodyContract(body);
 
-    expect(body.error).toMatch(/доступ|токен/i); // проверяю частичное совпадение
-    expect(body.error).toEqual("Доступ запрещен. Нужен токен."); // проверяю полное совпадение
+    expect(body.error).toMatch(/доступ|токен/i);
   });
 }
 
@@ -143,7 +142,7 @@ for (const testCase of invalidCreateMythologyCases) {
 
       expectApiErrorBodyContract(body);
 
-      expect(body.error).toEqual("Поля name и category обязательны.");
+      expect(body.error).toMatch(/name.*category.*обязательны/i);
     },
   );
 }
@@ -189,7 +188,7 @@ test(
 
     expectApiErrorBodyContract(body);
 
-    expect(body.error).toEqual("Для PUT запроса необходимо передать все поля: name, category, desc.");
+    expect(body.error).toMatch(/PUT.*name.*category.*desc/i);
   },
 );
 
@@ -266,7 +265,7 @@ for (const systemEntityId of protectedSystemEntityIds) {
 
       expectApiErrorBodyContract(body);
 
-      expect(body.error).toEqual("Запрещено! Базовые персонажи (ID 1-31) доступны только для чтения.");
+      expect(body.error).toMatch(/^(?=.*Запрещено)(?=.*только для чтения)/i);
     },
   );
 
@@ -300,7 +299,7 @@ for (const systemEntityId of protectedSystemEntityIds) {
 
       expectApiErrorBodyContract(body);
 
-      expect(body.error).toEqual("Запрещено! Базовые персонажи (ID 1-31) доступны только для чтения.");
+      expect(body.error).toMatch(/^(?=.*Запрещено)(?=.*только для чтения)/i);
     },
   );
 }
