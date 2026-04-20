@@ -2,6 +2,7 @@ import { getMythologyById, getMythologyList, type MythologyEntity } from '../../
 import { expect, test } from '../fixtures/api-test';
 import {
   mythologyCategories,
+  mythologySortDirections,
   notFoundMythologyEntityId,
 } from '../support/mythology-test-data';
 import {
@@ -217,3 +218,47 @@ test('GET /mythology/{id} returns 404 for a non-existent entity', { tag: '@read'
 
   expectApiErrorBodyContract(body);
 });
+
+for (const category of mythologyCategories) {
+  for (const sort of mythologySortDirections) {
+    test(
+      `GET /mythology?category=${category}&sort=${sort} returns correctly sorted data`,
+      { tag: '@read' },
+      async ({ request, debugApiCall }) => {
+
+        const response = await test.step(`Fetch mythology list filtered by category=${category} and sort=${sort}`, async () =>
+          debugApiCall(
+            {
+              label: `Fetch mythology list filtered by ${category} and ${sort}`,
+              request: {
+                method: 'GET',
+                url: `mythology?category=${category}&sort=${sort}`,
+              },
+            },
+            () => getMythologyList(request, { category, sort }),
+          ),
+        );
+
+        await expect(response).toBeOK();
+        expectJsonContentType(response);
+
+        const body = await test.step(
+          'Read filtered mythology list response',
+          async () => (await response.json()) as MythologyEntity[],
+        );
+
+        expectMythologyEntityListContract(body);
+        expect(body.length).toBeGreaterThan(0);
+
+        for (const entity of body) {
+          expect(entity.category).toBe(category);
+        }
+
+        const names = body.map((entity) => entity.name);
+        const expectedDesc = [...names].sort((a, b) => a.localeCompare(b)).reverse();
+
+        expect(names).toEqual(expectedDesc);
+      },
+    );
+  }
+}
