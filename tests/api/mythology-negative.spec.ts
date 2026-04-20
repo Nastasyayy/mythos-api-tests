@@ -105,6 +105,9 @@ for (const testCase of unauthorizedMutationCases) {
     );
 
     expectApiErrorBodyContract(body);
+
+    expect(body.error).toMatch(/доступ|токен/i); // проверяю частичное совпадение
+    expect(body.error).toEqual("Доступ запрещен. Нужен токен."); // проверяю полное совпадение
   });
 }
 
@@ -143,7 +146,7 @@ for (const testCase of invalidCreateMythologyCases) {
   );
 }
 
-  test(
+test(
   'PUT /mythology/{id} returns 400 when full payload is not provided',
   { tag: '@negative' },
   async ({ request, authToken, debugApiCall, mythologyEntityManager }) => {
