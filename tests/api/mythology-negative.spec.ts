@@ -105,6 +105,8 @@ for (const testCase of unauthorizedMutationCases) {
     );
 
     expectApiErrorBodyContract(body);
+
+    expect(body.error).toMatch(/доступ|токен/i);
   });
 }
 
@@ -139,6 +141,8 @@ for (const testCase of invalidCreateMythologyCases) {
       );
 
       expectApiErrorBodyContract(body);
+
+      expect(body.error).toMatch(/name.*category.*обязательны/i);
     },
   );
 }
@@ -183,6 +187,8 @@ test(
     );
 
     expectApiErrorBodyContract(body);
+
+    expect(body.error).toMatch(/PUT.*name.*category.*desc/i);
   },
 );
 
@@ -220,6 +226,8 @@ test(
     );
 
     expectApiErrorBodyContract(body);
+
+    expect(body.error).toEqual("Тело запроса не может быть пустым.");
   },
 );
 
@@ -256,6 +264,8 @@ for (const systemEntityId of protectedSystemEntityIds) {
       );
 
       expectApiErrorBodyContract(body);
+
+      expect(body.error).toMatch(/^(?=.*Запрещено)(?=.*только для чтения)/i);
     },
   );
 
@@ -288,6 +298,8 @@ for (const systemEntityId of protectedSystemEntityIds) {
       );
 
       expectApiErrorBodyContract(body);
+
+      expect(body.error).toMatch(/^(?=.*Запрещено)(?=.*только для чтения)/i);
     },
   );
 }
