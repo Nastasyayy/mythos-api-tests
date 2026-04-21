@@ -419,3 +419,59 @@ test('GraphQL createSoul, patchSoulDeeds, and banishSoul handle an authenticated
     }
   }
 });
+
+test('GraphQL createSoul handle an non-authorized requesting', { tag: '@graphql' }, async ({
+  request,
+  debugApiCall,
+}) => {
+  const soulName = `Playwright Soul ${Date.now()}`;
+
+  const createSoulResponse = await test.step('Attempt to create a soul without a token through GraphQL', async () =>
+    debugApiCall(
+      createGraphqlMetadata(
+        'Create a GraphQL soul',
+        {
+          operationName: 'CreateSoul',
+          query: `
+              mutation CreateSoul($input: SoulInput!) {
+                createSoul(input: $input) {
+                  id
+                  name
+                  deeds
+                  status
+                  weight
+                }
+              }
+            `,
+          variables: {
+            input: {
+              name: soulName,
+              weight: 25,
+            },
+          },
+        },
+        undefined,
+      ),
+      () =>
+        createSoul(request, '', {
+          name: soulName,
+          weight: 25,
+        }),
+    ),
+  );
+
+  await expect(createSoulResponse).toBeOK();
+  expectJsonContentType(createSoulResponse);
+
+  const body = (await createSoulResponse.json()) as GraphqlResponseBody<{ createSoul: SoulDetails | null }>;
+
+  expect(Array.isArray(body.errors)).toBe(true);
+  expect(body.errors?.length).toBeGreaterThan(0);
+
+  const errorMessage = body.errors?.[0]?.message;
+  expect(errorMessage).toEqual("Только авторизованные жрецы могут призывать души!");
+
+  if (body.data) {
+    expect(body.data.createSoul).toBeNull();
+  }
+});
