@@ -46,17 +46,22 @@ test(
     async ({ page, baseURL }) => {
         const exchanges: MockExchange[] = [];
 
-        await page.route('**/api/mythology', async (route) => {
+        await page.route('**/mythology', async (route) => {
             const request = route.request();
             expect(request.method()).toBe('GET');
 
-            const responseBody = [{
+            const response = await route.fetch();
+            const json = await response.json() as MythologyEntity[];
+
+            const mockedEntity = {
                 id: 999,
                 name: 'Mocked Hero',
                 category: 'heroes',
                 desc: 'The "Mocked Hero" created by mock.',
                 img: null,
-            }];
+            };
+
+            json.push(mockedEntity);
 
             exchanges.push({
                 label: 'Mock mythology returns the "Mocked Hero"',
@@ -67,7 +72,7 @@ test(
                     url: request.url(),
                 },
                 response: {
-                    body: responseBody,
+                    body: json,
                     headers: {
                         'access-control-allow-origin': '*',
                         'content-type': 'application/json',
@@ -81,7 +86,7 @@ test(
                 headers: {
                     'access-control-allow-origin': '*',
                 },
-                body: JSON.stringify(responseBody),
+                body: JSON.stringify(json),
             });
         });
 
@@ -90,7 +95,7 @@ test(
             return await page.evaluate(async (url) => {
                 const response = await fetch(url);
                 return response.json() as Promise<MythologyEntity[]>;
-            }, `${baseURL}/api/mythology`);
+            }, `${baseURL}mythology`);
         });
 
         for (const exchange of exchanges) {
@@ -115,6 +120,6 @@ test(
         expect(body).toContainEqual(expect.objectContaining({
             name: 'Mocked Hero'
         }));
-        expect(body.length).toBe(1);
+        expect(body.length).toBeGreaterThan(1);
     }
 );
